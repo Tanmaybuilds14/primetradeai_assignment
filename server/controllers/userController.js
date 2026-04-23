@@ -1,4 +1,5 @@
 import user from "../DBmodels/userDB.js";
+import bcrypt from "bcryptjs";
 
 const createUser = async (req,res) => {
   try {
@@ -44,9 +45,9 @@ const updateUser = async (req,res) => {
   try {
 
   const {id} = req.params;
-  const {username,email,skills,education} = req.body;
+  const {username,email,currentPassword,newPassword} = req.body;
 
-  const User = await user.findById(id);
+  const User = await user.findById(id).select('+password');
 
   if(!User){
     return res.status(404).json({
@@ -66,6 +67,24 @@ const updateUser = async (req,res) => {
     }
   }
 
+  // Handle password change
+  if(currentPassword && newPassword){
+    const isMatch = await bcrypt.compare(currentPassword, User.password);
+    if(!isMatch){
+      return res.status(400).json({
+        success:false,
+        msg:'Current password is incorrect'
+      });
+    }
+    if(newPassword.length < 6){
+      return res.status(400).json({
+        success:false,
+        msg:'New password must be at least 6 characters'
+      });
+    }
+    User.password = newPassword;
+  }
+
   User.username = username || User.username;
   User.email = email || User.email;
   
@@ -74,7 +93,11 @@ const updateUser = async (req,res) => {
   res.status(200).json({
     success:true,
     msg:'user updated successfully',
-    data:updatedUser
+    data:{
+      _id: updatedUser._id,
+      username: updatedUser.username,
+      email: updatedUser.email
+    }
   });
 
 

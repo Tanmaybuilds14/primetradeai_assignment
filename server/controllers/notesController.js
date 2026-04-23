@@ -3,7 +3,7 @@ import Notes from "../DBmodels/notesDB.js";
 
 const createNotes = async (req,res) => {
   try {
-    const note = req.body;
+    const { note } = req.body;
     const id = req.user.id
 
     if (!id || !note || !note.trim()) {
@@ -24,7 +24,7 @@ const createNotes = async (req,res) => {
     
     //note save
     const newnote = await Notes.create({
-      user_id:id,
+      user:id,
       note:note.trim()
     });
 
@@ -44,6 +44,26 @@ const createNotes = async (req,res) => {
 
   }
 }
+
+//get all notes for user
+const getNotes = async (req, res) => {
+  try {
+    const id = req.user.id;
+    if (!id) {
+      return res.status(400).json({ success: false, msg: "User id is required" });
+    }
+    
+    const notes = await Notes.find({ user: id }).sort({ createdAt: -1 });
+    
+    return res.status(200).json({
+      success: true,
+      data: notes
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ success: false, msg: "Internal server error" });
+  }
+};
 
 //update note function 
 const updateNote = async (req, res) => {
@@ -120,4 +140,4 @@ const deleteNote = async (req, res) => {
   }
 };
 
-export {createNotes , updateNote , deleteNote}
+export {createNotes , getNotes , updateNote , deleteNote}

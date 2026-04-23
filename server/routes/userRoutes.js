@@ -8,7 +8,7 @@ import userValidator from "../middleware/uservalidator.js";
 const userRouter = express.Router();
 //this file will contain all the routes for user and entity
 //login route
-userRouter.post('/login',authmidlleware,userValidator,logincontroller);
+userRouter.post('/login',logincontroller);
 //register user route
 userRouter.post('/register',userValidator,createUser);
 //update user route

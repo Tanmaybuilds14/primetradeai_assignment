@@ -17,13 +17,13 @@ const authmidlleware = async (req,res,next) =>{
   const decoded = jwt.verify(token,process.env.JWT_SECRET_KEY);
  
  //check if user exists in database
-  const user = await User.findById(decoded.userid);
+  const user = await User.findById(decoded.id);
   if(!user){
     return res.status(404).json({msg:'user not found in database'});
   }
   
  //sending decoded payload
-  req.user = decoded.userid;
+  req.user = { id: decoded.id };
   next();
  } catch (error) {
   console.error(error.message);
