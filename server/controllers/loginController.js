@@ -7,6 +7,15 @@ dotenv.config();
 const logincontroller = async (req,res)=>{
   try {
     const {email,password} = req.body;
+
+    // Validate input
+    if(!email || !password){
+      return res.status(400).json({
+        success:false,
+        msg:'Email and password are required'
+      });
+    }
+
     //returns a object if user is found
     const User = await user.findOne({email}).select("+password");
 
@@ -28,11 +37,20 @@ const logincontroller = async (req,res)=>{
         msg:'Invalid email or password'
       })
     }
+
+    // Check if JWT_SECRET_KEY is configured
+    if(!process.env.JWT_SECRET_KEY){
+      console.error('JWT_SECRET_KEY is not configured');
+      return res.status(500).json({
+        success:false,
+        msg:'Server configuration error'
+      });
+    }
+
     const token = jwt.sign(
       {
       id:User._id,
-      email:User.email,
-      logintype:User.logintype
+      email:User.email
       },
       process.env.JWT_SECRET_KEY,
       { expiresIn: "7d" }
@@ -43,8 +61,12 @@ const logincontroller = async (req,res)=>{
       token
     });
   } catch (error) {
-    console.error(error.message);
-    return res.status(500).json('Internal server error');
+    console.error('Login error:', error.message);
+    return res.status(500).json({
+      success:false,
+      msg:'Internal server error',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
   }
 }
 
