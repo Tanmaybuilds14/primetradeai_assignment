@@ -2,6 +2,7 @@
   "name": "primetradeai-notes-app",
   "version": "1.0.0",
   "description": "Full-stack Notes application with React frontend and Express backend",
+  "type": "module",
   "scripts": {
     "install:server": "cd server && npm install",
     "install:client": "cd client && npm install",
