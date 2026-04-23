@@ -118,3 +118,7 @@ The project includes a `vercel.json` file that defines install commands for both
 - Simple but complete CRUD-style note workflow.
 - Deployment-aware backend structure with Vercel support.
 - Good foundation for extending into a larger productivity app.
+## API collection
+https://sarvetanmay276-3789610.postman.co/workspace/Tanmay-sarve's-Workspace~2238c4ee-de8b-43ef-86c5-37db12ca006f/collection/51215265-d83df2d0-7662-4df5-8780-4714d2b64579?action=share&creator=51215265&live=gg805or0bi
+##
+  
